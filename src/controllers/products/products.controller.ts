@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body } from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
@@ -12,16 +12,28 @@ export class ProductsController {
     }
 
     @Get('/:id')
-    getProduct(@Param('id') id: string){
-      return `producto con id: ${id}`
+    get(@Param('id') id: string){
+      return {
+        message: `producto con id: ${id}`
+      }
     }
 
     @Get('/')
-    getProducts(
+    getOne(
       @Query('limit') limit: number = 10,
       @Query('offset') offset: number = 0,
       @Query('brand') brand: string
-    ): string{
-      return `limit : ${limit} y offset ${offset} y marca ${brand}`
+    ){
+      return {
+        message: `limit : ${limit} y offset ${offset} y marca ${brand}`
+      }
+    }
+
+    @Post('/')
+    create(@Body() payload:any){
+      return {
+        message: 'acción de crear',
+        payload,
+      }
     }
 }
