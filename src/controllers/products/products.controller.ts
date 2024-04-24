@@ -41,7 +41,7 @@ export class ProductsController {
 
     @Post('/')
     create(@Body() payload: CreateProductDto){
-      this.productsService.create(payload);
+      return this.productsService.create(payload);
     }
 
     @Put('/:id')
