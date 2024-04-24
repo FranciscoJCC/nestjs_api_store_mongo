@@ -29,7 +29,6 @@ export class ProductsService {
   }
 
   findOne(id: number){
-
     const product = this.products.find((item) => item.id === id);
 
     if(!product){

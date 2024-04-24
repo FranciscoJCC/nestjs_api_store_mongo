@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProductsService } from './../../services/products/products.service';
+import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -29,6 +30,7 @@ export class ProductsController {
     }
 
     @Get('/:id')
+    @HttpCode(HttpStatus.ACCEPTED)
     getOne(@Param('id', ParseIntPipe) id: number){
       return this.productsService.findOne(id);
     }
