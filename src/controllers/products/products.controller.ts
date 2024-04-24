@@ -1,6 +1,8 @@
 import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProductsService } from './../../services/products/products.service';
 import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
+import { CreateProductDto } from "../../dtos/products.dtos";
+import { UpdateProductDto } from "../../dtos/products.dtos";
 
 @Controller('products')
 export class ProductsController {
@@ -38,12 +40,12 @@ export class ProductsController {
 
 
     @Post('/')
-    create(@Body() payload:any){
+    create(@Body() payload: CreateProductDto){
       this.productsService.create(payload);
     }
 
     @Put('/:id')
-    update(@Param('id', ParseIntPipe) id: number, @Body() payload: any){
+    update(@Param('id', ParseIntPipe) id: number, @Body() payload: UpdateProductDto){
       return this.productsService.update(id, payload);
     }
 
