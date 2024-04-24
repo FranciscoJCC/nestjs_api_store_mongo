@@ -4,7 +4,7 @@ import { Product } from '../../entities/product.entity';
 @Injectable()
 export class ProductsService {
 
-  private counterId = 1;
+  private counterId = 2;
   private products: Product[] = [
     {
       id: 1,
@@ -29,7 +29,15 @@ export class ProductsService {
   }
 
   findOne(id: number){
-    return this.products.find((item) => item.id === id);
+
+    const product = this.products.find((item) => item.id === id);
+
+    if(!product){
+      return null;
+    }
+
+    return product;
+
   }
 
   create(payload: any){
@@ -48,17 +56,14 @@ export class ProductsService {
 
   update(id: number, payload: any){
     const product = this.findOne(id);
-    const index = this.products.indexOf(product);
 
-    const newData = {
+    const index = this.products.findIndex((item) => item.id === id);
+    this.products[index] = {
       ...product,
       ...payload
     };
 
-    this.products.splice(index, 1, newData);
-
-    return newData;
-
+    return this.products[index];
 
   }
 
