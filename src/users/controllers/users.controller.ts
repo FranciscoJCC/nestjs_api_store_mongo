@@ -20,6 +20,12 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Get('/:id/orders')
+  @HttpCode(HttpStatus.ACCEPTED)
+  getOrders(@Param('id', ParseIntPipe) id: number){
+    return this.usersService.getOrdersByUser(id);
+  }
+
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() payload: CreateUserDto){
