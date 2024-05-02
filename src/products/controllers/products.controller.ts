@@ -1,9 +1,10 @@
 import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
-import { CreateProductDto, UpdateProductDto } from "../dtos/products.dtos";
+import { CreateProductDto, UpdateProductDto } from "../dtos/products.dto";
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
 
@@ -22,6 +23,7 @@ export class ProductsController {
     }
 
     @Get('/')
+    @ApiOperation({ summary: 'List of products'})
     @HttpCode(HttpStatus.ACCEPTED)
     get(
       @Query('limit') limit: number = 10,

@@ -1,7 +1,9 @@
 import { Controller, Param, Query, Get, HttpCode, HttpStatus, ParseIntPipe, Post, Body, Put, Delete } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dtos';
+import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
 
