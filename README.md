@@ -45,6 +45,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Documentation API
+```bash
+# URL
+$ /docs
+```
+
 ## Test
 
 ```bash
