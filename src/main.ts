@@ -12,6 +12,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true //Alertamos del error, cuando se agregue información no deseada al payload
   }));
 
+  //Documentation of swagger
   const config = new DocumentBuilder()
   .setTitle('Platzi Store')
   .setDescription('The store API description')
@@ -21,6 +22,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+
+  //Enable cors
+  app.enableCors();
 
   await app.listen(3000);
 }
