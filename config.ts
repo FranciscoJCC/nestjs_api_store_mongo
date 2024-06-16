@@ -9,7 +9,11 @@ export default registerAs('config', () => {
     apiKey: process.env.API_KEY,
     mongodb: {
       user: process.env.MONGO_INITDB_ROOT_USERNAME,
-      password: process.env.MONGO_INITDB_ROOT_PASSWORD
+      password: process.env.MONGO_INITDB_ROOT_PASSWORD,
+      dbName: process.env.MONGO_DB,
+      port: parseInt(process.env.MONGO_PORT),
+      host: process.env.MONGO_HOST,
+      connection: process.env.MONGO_CONNECTION
     }
   }
 });
