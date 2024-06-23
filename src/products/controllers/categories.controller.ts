@@ -23,11 +23,11 @@ export class CategoriesController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Param('id', ParseIntPipe) id: number){
+  getOne(@Param('id') id: string){
     return this.categoriesService.findOne(id);
   }
 
-  @Post('/')
+  /* @Post('/')
   @HttpCode(HttpStatus.ACCEPTED)
   create(@Body() payload: CreateCategoryDto){
     return this.categoriesService.create(payload);
@@ -43,6 +43,6 @@ export class CategoriesController {
   @HttpCode(HttpStatus.ACCEPTED)
   delete(@Param('id', ParseIntPipe) id: number){
     return this.categoriesService.delete(id);
-  }
+  } */
 
 }

@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto } from "../dtos/products.dto";
 import { UpdateProductDto } from "../dtos/products.dto";
@@ -6,32 +8,14 @@ import { UpdateProductDto } from "../dtos/products.dto";
 @Injectable()
 export class ProductsService {
 
-  private counterId = 2;
-  private products: Product[] = [
-    {
-      id: 1,
-      name: "Producto 1",
-      description: "lorem impusn",
-      price: 1200,
-      image: "URL",
-      stock: 100
-    },
-    {
-      id: 2,
-      name: "Producto 2",
-      description: "lorem impusn",
-      price: 100,
-      image: "URL",
-      stock: 20
-    }
-  ];
+  constructor(@InjectModel(Product.name) private productService: Model<Product>){}
 
   findAll() {
-    return this.products;
+    return this.productService.find().exec();
   }
 
-  findOne(id: number){
-    const product = this.products.find((item) => item.id === id);
+  async findOne(id: string){
+    const product = await this.productService.findById(id).exec();
 
     if(!product){
       throw new NotFoundException('product not found');
@@ -41,41 +25,41 @@ export class ProductsService {
 
   }
 
-  create(payload: CreateProductDto){
+   async create(payload: CreateProductDto){
 
-    this.counterId++;
+    const newProduct = new this.productService(payload);
 
-    const newProduct = {
-      id: this.counterId,
-      ...payload
+    return await newProduct.save();
+  }
+
+  async update(id: string, changes: UpdateProductDto){
+
+    const updateProduct = await this.productService.findByIdAndUpdate(id,
+      {
+        $set: changes,//Solo los cambios que se envien
+      },
+      {
+        new : true
+      } //Si queremos que nos retorne el producto ya actualizado
+    ).exec();
+
+    if(!updateProduct){
+      throw new NotFoundException('product not found');
     }
 
-    this.products.push(newProduct);
-
-    return newProduct;
-  }
-
-  update(id: number, payload: UpdateProductDto){
-    const product = this.findOne(id);
-
-    const index = this.products.findIndex((item) => item.id === id);
-    this.products[index] = {
-      ...product,
-      ...payload
-    };
-
-    return this.products[index];
+    return updateProduct;
 
   }
 
-  delete(id: number){
-    const product = this.findOne(id);
+  async delete(id: string){
 
-    const productIndex = this.products.indexOf(product);
+    const deleteProduct = await this.productService.findByIdAndDelete(id).exec();
 
-    this.products.splice(productIndex, 1);
+    if(!deleteProduct){
+      throw new NotFoundException('product not found');
+    }
 
-    return { message: "product deleted"};
+    return deleteProduct
   }
 
 }

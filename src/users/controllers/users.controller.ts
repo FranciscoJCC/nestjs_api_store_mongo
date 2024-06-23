@@ -18,11 +18,11 @@ export class UsersController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Param('id', ParseIntPipe) id: number){
+  getOne(@Param('id') id: string){
     return this.usersService.findOne(id);
   }
 
-  @Get('/:id/orders')
+  /* @Get('/:id/orders')
   @HttpCode(HttpStatus.ACCEPTED)
   getOrders(@Param('id', ParseIntPipe) id: number){
     return this.usersService.getOrdersByUser(id);
@@ -44,5 +44,5 @@ export class UsersController {
   @HttpCode(HttpStatus.ACCEPTED)
   delete(@Param('id', ParseIntPipe) id: number){
     return this.usersService.delete(id);
-  }
+  } */
 }

@@ -35,11 +35,9 @@ export class ProductsController {
 
     @Get('/:id')
     @HttpCode(HttpStatus.ACCEPTED)
-    getOne(@Param('id', ParseIntPipe) id: number){
+    getOne(@Param('id') id: string){
       return this.productsService.findOne(id);
     }
-
-
 
     @Post('/')
     create(@Body() payload: CreateProductDto){
@@ -47,12 +45,12 @@ export class ProductsController {
     }
 
     @Put('/:id')
-    update(@Param('id', ParseIntPipe) id: number, @Body() payload: UpdateProductDto){
+    update(@Param('id') id: string, @Body() payload: UpdateProductDto){
       return this.productsService.update(id, payload);
     }
 
     @Delete('/:id')
-    delete(@Param('id', ParseIntPipe) id:number){
+    delete(@Param('id') id:string){
       return this.productsService.delete(id);
     }
 }

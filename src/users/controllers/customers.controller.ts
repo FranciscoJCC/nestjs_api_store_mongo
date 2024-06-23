@@ -16,11 +16,11 @@ export class CustomersController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Param('id', ParseIntPipe) id: number){
+  getOne(@Param('id') id: string){
     return this.customerService.findOne(id);
   }
 
-  @Post('/')
+  /* @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() payload: CreateCustomerDto){
     return this.customerService.create(payload);
@@ -36,6 +36,6 @@ export class CustomersController {
   @HttpCode(HttpStatus.ACCEPTED)
   delete(@Param('id', ParseIntPipe) id: number){
     return this.customerService.delete(id);
-  }
+  } */
 
 }

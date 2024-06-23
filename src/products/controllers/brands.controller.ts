@@ -19,11 +19,11 @@ export class BrandsController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Param('id', ParseIntPipe) id: number){
+  getOne(@Param('id') id: string){
     return this.brandsService.findOne(id);
   }
 
-  @Post('/')
+  /* @Post('/')
   @HttpCode(HttpStatus.ACCEPTED)
   create(@Body() payload: CreateBrandDto){
     return this.brandsService.create(payload);
@@ -39,5 +39,5 @@ export class BrandsController {
   @HttpCode(HttpStatus.ACCEPTED)
   delete(@Param('id', ParseIntPipe) id: number){
     return this.brandsService.delete(id);
-  }
+  } */
 }

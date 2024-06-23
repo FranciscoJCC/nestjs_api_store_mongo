@@ -3,28 +3,22 @@ import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.identity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
 import { ProductsService } from 'src/products/services/products.service';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UsersService {
 
-  constructor(private productService: ProductsService){}
+  constructor(@InjectModel(User.name) private userService: Model<User>){}
 
-  private counterId = 1;
-  private users: User[] = [
-    {
-      id: 1,
-      email: "francisco@gmail.com",
-      password: "admin123",
-      role: 'admin'
-    }
-  ];
 
-  findAll(){
-    return this.users;
+  async findAll(){
+    return this.userService.find().exec();
   }
 
-  findOne(id){
-    const user = this.users.find((item) => item.id === id);
+  async findOne(id: string){
+
+    const user = this.userService.findById(id).exec();
 
     if(!user){
       throw new NotFoundException('user not found');
@@ -33,7 +27,7 @@ export class UsersService {
     return user;
   }
 
-  create(payload: CreateUserDto){
+  /* create(payload: CreateUserDto){
     this.counterId ++;
 
     const newUser = {
@@ -68,15 +62,15 @@ export class UsersService {
     this.users.splice(index,1);
 
     return { message: "user deleted"};
-  }
+  } */
 
-  getOrdersByUser(id: number): Order{
+  /* async getOrdersByUser(id: number){
     const user = this.findOne(id);
 
     return {
       date: new Date(),
       user,
-      products: this.productService.findAll()
+      products: await this.productService.findAll()
     }
-  }
+  } */
 }
