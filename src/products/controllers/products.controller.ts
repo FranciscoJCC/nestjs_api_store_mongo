@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
-import { CreateProductDto, UpdateProductDto } from "../dtos/products.dto";
+import { CreateProductDto, UpdateProductDto, FilterProductsDto } from "../dtos/products.dto";
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Products')
@@ -25,12 +25,8 @@ export class ProductsController {
     @Get('/')
     @ApiOperation({ summary: 'List of products'})
     @HttpCode(HttpStatus.ACCEPTED)
-    get(
-      @Query('limit') limit: number = 10,
-      @Query('offset') offset: number = 0,
-      @Query('brand') brand: string
-    ){
-      return this.productsService.findAll();
+    get(@Query() params: FilterProductsDto){
+      return this.productsService.findAll(params);
     }
 
     @Get('/:id')
