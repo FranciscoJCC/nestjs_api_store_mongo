@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Brand } from '../entities/brand.entity';
-import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dto';
+import { CreateBrandDto, FilterBrandsDto, UpdateBrandDto } from '../dtos/brands.dto';
 
 
 @Injectable()
@@ -10,12 +10,18 @@ export class BrandsService {
 
   constructor(@InjectModel(Brand.name) private brandService: Model<Brand>){}
 
-  findAll(){
-    return this.brandService.find().exec();
+  async findAll(params?: FilterBrandsDto){
+
+    if(params){
+      const { limit, offset } = params;
+
+      return await this.brandService.find().skip(offset).limit(limit).exec();
+    }
+    return await this.brandService.find().exec();
   }
 
-  findOne(id: string){
-    const brand = this.brandService.findById(id).exec();
+  async findOne(id: string){
+    const brand = await this.brandService.findById(id).exec();
 
     if(!brand){
       throw new NotFoundException('brand not found');
@@ -24,40 +30,38 @@ export class BrandsService {
     return brand;
   }
 
-  /* create(payload: CreateBrandDto){
-    this.counterId++;
+  async create(data: CreateBrandDto){
 
-    const newBrand = {
-      id: this.counterId,
-      ...payload
-    };
+    const newBrand = new this.brandService(data);
 
-    this.brands.push(newBrand);
-
-    return newBrand;
+    return await newBrand.save();
   }
 
-  update(id: number, payload: UpdateBrandDto){
-    const brand = this.findOne(id);
+  async update(id: string, changes: UpdateBrandDto){
 
-    const index = this.brands.findIndex((item) => item.id === id);
+    const updateBrand = await this.brandService.findByIdAndUpdate(id,
+      {
+        $set: changes
+      },
+      {
+        new: true
+      }
+    ).exec();
 
-    this.brands[index] = {
-      ...brand,
-      ...payload
-    };
+    if(!updateBrand){
+      throw new NotFoundException('Brand not found');
+    }
 
-    return this.brands[index];
+    return updateBrand;
   }
 
-  delete(id: number){
-    const brand = this.findOne(id);
+  async delete(id: string){
+    const brand = await this.brandService.findByIdAndDelete(id).exec();
 
-    const index = this.brands.indexOf(brand);
-
-    this.brands.splice(index, 1);
-
-    return { message: "brand deleted"};
-  } */
+    if(!brand){
+      throw new NotFoundException('brand not found');
+    }
+    return { status: true , message: "brand deleted"};
+  }
 
 }

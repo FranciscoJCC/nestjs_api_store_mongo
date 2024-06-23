@@ -9,7 +9,7 @@ export class ProductsService {
 
   constructor(@InjectModel(Product.name) private productService: Model<Product>){}
 
-  findAll(params?: FilterProductsDto) {
+  async findAll(params?: FilterProductsDto) {
 
     if(params){
       const filters: FilterQuery<Product> = {};
@@ -20,10 +20,10 @@ export class ProductsService {
         filters.price = { $gte: minPrice, $lte: maxPrice }
       }
 
-      return this.productService.find(filters).skip(offset).limit(limit).exec();
+      return await this.productService.find(filters).skip(offset).limit(limit).exec();
     }
 
-    return this.productService.find().exec();
+    return await this.productService.find().exec();
   }
 
   async findOne(id: string){
@@ -37,7 +37,7 @@ export class ProductsService {
 
   }
 
-   async create(payload: CreateProductDto){
+  async create(payload: CreateProductDto){
 
     const newProduct = new this.productService(payload);
 
@@ -71,7 +71,7 @@ export class ProductsService {
       throw new NotFoundException('product not found');
     }
 
-    return deleteProduct
+    return { status: true, message: "category deleted"};
   }
 
 }

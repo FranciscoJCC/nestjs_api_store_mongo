@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dto';
+import { CreateCategoryDto, FilterCategoriesDto, UpdateCategoryDto } from '../dtos/categories.dto';
 import { Category } from '../entities/category.entity';
 
 
@@ -10,12 +10,17 @@ export class CategoriesService {
 
   constructor(@InjectModel(Category.name) private categoryService: Model<Category>){}
 
-  findAll(){
-    return this.categoryService.find().exec();
+  async findAll(params?: FilterCategoriesDto){
+    if(params){
+      const { limit, offset } = params;
+
+      return await this.categoryService.find().skip(offset).limit(limit).exec();
+    }
+    return await this.categoryService.find().exec();
   }
 
-  findOne(id: string){
-    const category = this.categoryService.findById(id).exec();
+  async findOne(id: string){
+    const category = await this.categoryService.findById(id).exec();
 
     if(!category){
       throw new NotFoundException('Category not found');
@@ -24,44 +29,40 @@ export class CategoriesService {
     return category;
   }
 
-  /* create(payload: CreateCategoryDto){
-    this.counterId++;
+  async create(data: CreateCategoryDto){
 
-    const newCategory = {
-      id: this.counterId,
-      ...payload
-    };
+    const newCategory = new this.categoryService(data);
 
-    this.categories.push(newCategory);
-
-    return newCategory;
+    return await newCategory.save();
   }
 
 
-  update(id: number, payload : UpdateCategoryDto){
-    const category = this.findOne(id);
+  async update(id: string, changes : UpdateCategoryDto){
 
-    const index = this.categories.findIndex((item) => item.id === id);
+    const updateCategory = await this.categoryService.findByIdAndUpdate(id,
+      {
+        $set: changes
+      },
+      {
+        new: true
+      }
+    ).exec();
 
-    this.categories[index] = {
-      ...category,
-      ...payload,
-      id
+    if(!updateCategory){
+      throw new NotFoundException('Category not found');
     }
 
-    return this.categories[index];
+    return updateCategory;
   }
 
-  delete(id: number){
-    const category = this.findOne(id);
+  async delete(id: string){
+    const category = await this.categoryService.findByIdAndDelete(id).exec();
 
-    const index = this.categories.indexOf(category);
+    if(!category){
+      throw new NotFoundException('Category not found');
+    }
 
-    this.categories.splice(index, 1);
-
-    return { message: "category deleted"};
-  } */
-
-
+    return { status: true, message: "category deleted"};
+  }
 
 }

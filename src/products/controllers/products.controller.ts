@@ -36,11 +36,13 @@ export class ProductsController {
     }
 
     @Post('/')
+    @HttpCode(HttpStatus.ACCEPTED)
     create(@Body() payload: CreateProductDto){
       return this.productsService.create(payload);
     }
 
     @Put('/:id')
+    @HttpCode(HttpStatus.ACCEPTED)
     update(@Param('id', MongoIdPipe) id: string, @Body() payload: UpdateProductDto){
       return this.productsService.update(id, payload);
     }

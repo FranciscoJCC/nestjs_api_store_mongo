@@ -1,29 +1,28 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { BrandsService } from '../services/brands.service';
-import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dto';
+import { CreateBrandDto, FilterBrandsDto, UpdateBrandDto } from '../dtos/brands.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 
 @ApiTags('Brands')
 @Controller('brands')
 export class BrandsController {
   //
-  constructor(private brandsService: BrandsService) {
-
-  }
+  constructor(private brandsService: BrandsService) {}
 
   @Get('/')
   @HttpCode(HttpStatus.ACCEPTED)
-  get(){
-    return this.brandsService.findAll();
+  get(@Query() params: FilterBrandsDto){
+    return this.brandsService.findAll(params);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Param('id') id: string){
+  getOne(@Param('id', MongoIdPipe) id: string){
     return this.brandsService.findOne(id);
   }
 
-  /* @Post('/')
+  @Post('/')
   @HttpCode(HttpStatus.ACCEPTED)
   create(@Body() payload: CreateBrandDto){
     return this.brandsService.create(payload);
@@ -31,13 +30,13 @@ export class BrandsController {
 
   @Put('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  update(@Param('id', ParseIntPipe) id: number, @Body() payload: UpdateBrandDto){
+  update(@Param('id', MongoIdPipe) id: string, @Body() payload: UpdateBrandDto){
     return this.brandsService.update(id, payload);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.ACCEPTED)
-  delete(@Param('id', ParseIntPipe) id: number){
+  delete(@Param('id', MongoIdPipe) id: string){
     return this.brandsService.delete(id);
-  } */
+  }
 }
