@@ -27,42 +27,41 @@ export class UsersService {
     return user;
   }
 
-  /* create(payload: CreateUserDto){
-    this.counterId ++;
+  async create(data: CreateUserDto){
 
-    const newUser = {
-      id: this.counterId,
-      ...payload
-    };
+    const newUser = new this.userService(data);
 
-    this.users.push(newUser);
-
-    return newUser;
+    return await newUser.save();
   }
 
-  update(id: number, payload: UpdateUserDto){
-    const user = this.findOne(id);
+  async update(id: string, changes: UpdateUserDto){
 
-    const index = this.users.findIndex((item) => item.id === id);
+    const updateUser = await this.userService.findByIdAndUpdate(id,
+      {
+        $set: changes
+      },
+      {
+        new: true
+      }
+    ).exec();
 
-    this.users[index] = {
-      ...user,
-      ...payload,
-      id
-    };
+    if(!updateUser){
+      throw new NotFoundException('user not found');
+    }
 
-    return this.users[index];
+    return updateUser;
   }
 
-  delete(id: number){
-    const user = this.findOne(id);
+  async delete(id: string){
 
-    const index = this.users.indexOf(user);
+    const deleteUser = await this.userService.findByIdAndDelete(id).exec();
 
-    this.users.splice(index,1);
+    if(!deleteUser){
+      throw new NotFoundException('user not found');
+    }
 
-    return { message: "user deleted"};
-  } */
+    return { status: true, message: "user deleted"};
+  }
 
   /* async getOrdersByUser(id: number){
     const user = this.findOne(id);
