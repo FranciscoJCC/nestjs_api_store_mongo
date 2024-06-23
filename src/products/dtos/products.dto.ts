@@ -1,7 +1,7 @@
 /*
   DTO => Data transfers Objects
 */
-import { IsString, IsNumber, IsUrl, IsNotEmpty, IsPositive, IsOptional, Min } from 'class-validator';
+import { IsString, IsNumber, IsUrl, IsNotEmpty, IsPositive, IsOptional, Min, ValidateIf } from 'class-validator';
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 
 export class CreateProductDto {
@@ -43,5 +43,13 @@ export class FilterProductsDto {
   @IsOptional()
   @Min(0)
   offset: number;
+
+  @IsOptional()
+  @Min(0)
+  minPrice: number;
+
+  @ValidateIf((params) => params.minPrice)
+  @IsPositive()
+  maxPrice: number;
 }
 
