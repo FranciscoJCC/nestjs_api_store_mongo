@@ -10,7 +10,7 @@ export class Product extends Document {
   @Prop()
   description: string;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number, index: true })
   price: number;
 
   @Prop({ type: Number })
@@ -21,3 +21,4 @@ export class Product extends Document {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+//ProductSchema.index({ price: 1, stock: -1}) //1 - Ascendente, -1 Descendente
