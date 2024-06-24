@@ -1,7 +1,7 @@
 /*
   DTO => Data transfers Objects
 */
-import { IsString, IsNumber, IsUrl, IsNotEmpty, IsPositive, IsOptional, Min, ValidateIf, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsUrl, IsNotEmpty, IsPositive, IsOptional, Min, ValidateIf, ValidateNested, IsMongoId } from 'class-validator';
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { CreateCategoryDto } from './categories.dto';
 
@@ -33,10 +33,14 @@ export class CreateProductDto {
   @ApiProperty()
   readonly image: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ValidateNested()
   @ApiProperty()
   readonly category: CreateCategoryDto;
+
+  @IsMongoId()
+  @IsOptional()
+  readonly brand: string;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto){}

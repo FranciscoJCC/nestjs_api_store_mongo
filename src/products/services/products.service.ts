@@ -20,10 +20,10 @@ export class ProductsService {
         filters.price = { $gte: minPrice, $lte: maxPrice }
       }
 
-      return await this.productService.find(filters).skip(offset).limit(limit).exec();
+      return await this.productService.find(filters).populate('brand').skip(offset).limit(limit).exec();
     }
 
-    return await this.productService.find().exec();
+    return await this.productService.find().populate('brand').exec();
   }
 
   async findOne(id: string){
