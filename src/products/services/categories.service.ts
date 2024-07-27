@@ -8,19 +8,19 @@ import { Category } from '../entities/category.entity';
 @Injectable()
 export class CategoriesService {
 
-  constructor(@InjectModel(Category.name) private categoryService: Model<Category>){}
+  constructor(@InjectModel(Category.name) private categoryModel: Model<Category>){}
 
   async findAll(params?: FilterCategoriesDto){
     if(params){
       const { limit, offset } = params;
 
-      return await this.categoryService.find().skip(offset).limit(limit).exec();
+      return await this.categoryModel.find().skip(offset).limit(limit).exec();
     }
-    return await this.categoryService.find().exec();
+    return await this.categoryModel.find().exec();
   }
 
   async findOne(id: string){
-    const category = await this.categoryService.findById(id).exec();
+    const category = await this.categoryModel.findById(id).exec();
 
     if(!category){
       throw new NotFoundException('Category not found');
@@ -31,7 +31,7 @@ export class CategoriesService {
 
   async create(data: CreateCategoryDto){
 
-    const newCategory = new this.categoryService(data);
+    const newCategory = new this.categoryModel(data);
 
     return await newCategory.save();
   }
@@ -39,7 +39,7 @@ export class CategoriesService {
 
   async update(id: string, changes : UpdateCategoryDto){
 
-    const updateCategory = await this.categoryService.findByIdAndUpdate(id,
+    const updateCategory = await this.categoryModel.findByIdAndUpdate(id,
       {
         $set: changes
       },
@@ -56,7 +56,7 @@ export class CategoriesService {
   }
 
   async delete(id: string){
-    const category = await this.categoryService.findByIdAndDelete(id).exec();
+    const category = await this.categoryModel.findByIdAndDelete(id).exec();
 
     if(!category){
       throw new NotFoundException('Category not found');

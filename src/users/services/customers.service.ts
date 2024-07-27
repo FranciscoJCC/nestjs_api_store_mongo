@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 @Injectable()
 export class CustomersService {
 
-  constructor(@InjectModel(Customer.name) private customerService: Model<Customer>){}
+  constructor(@InjectModel(Customer.name) private customerModel: Model<Customer>){}
 
 
   async findAll(params?: FilterCustomersDto){
@@ -15,13 +15,13 @@ export class CustomersService {
     if(params){
       const { limit, offset } = params;
 
-      return await this.customerService.find().skip(offset).limit(limit).exec();
+      return await this.customerModel.find().skip(offset).limit(limit).exec();
     }
-    return this.customerService.find().exec();
+    return this.customerModel.find().exec();
   }
 
   async findOne(id: string){
-    const customer = await this.customerService.findById(id);
+    const customer = await this.customerModel.findById(id);
 
     if(!customer){
       throw new NotFoundException('customer not found');
@@ -32,14 +32,14 @@ export class CustomersService {
 
   async create(data: CreateCustomerDto){
 
-    const newCustomer = new this.customerService(data);
+    const newCustomer = new this.customerModel(data);
 
     return await newCustomer.save();
   }
 
   async update(id: string, changes: UpdateCustomerDto){
 
-    const customerUpdate = await this.customerService.findByIdAndUpdate(id,
+    const customerUpdate = await this.customerModel.findByIdAndUpdate(id,
       {
         $set: changes
       },
@@ -57,7 +57,7 @@ export class CustomersService {
 
   async delete(id: string){
 
-    const customer = await this.customerService.findByIdAndDelete(id);
+    const customer = await this.customerModel.findByIdAndDelete(id);
 
     if(!customer){
       throw new NotFoundException('customer not found');

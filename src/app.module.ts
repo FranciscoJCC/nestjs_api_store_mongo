@@ -41,7 +41,7 @@ import config from 'config';
         return response.data;
       },
       inject: [ HttpService ]
-    }
+    },
   ],
 })
 export class AppModule {}

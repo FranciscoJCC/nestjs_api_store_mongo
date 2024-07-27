@@ -1,15 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from '../entities/user.entity';
-import { Order } from '../entities/order.identity';
+import { User } from '../entities/user.entity'
 import { CreateUserDto, FilterUsersDto, UpdateUserDto } from '../dtos/users.dto';
-import { ProductsService } from 'src/products/services/products.service';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel(User.name) private userService: Model<User>){}
+  constructor(@InjectModel(User.name) private userModel: Model<User>){}
 
 
   async findAll(params?: FilterUsersDto){
@@ -17,15 +15,15 @@ export class UsersService {
     if(params){
       const { limit, offset } = params;
 
-      return await this.userService.find().skip(offset).limit(limit).exec();
+      return await this.userModel.find().skip(offset).limit(limit).exec();
     }
 
-    return this.userService.find().exec();
+    return this.userModel.find().exec();
   }
 
   async findOne(id: string){
 
-    const user = this.userService.findById(id).exec();
+    const user = this.userModel.findById(id).exec();
 
     if(!user){
       throw new NotFoundException('user not found');
@@ -36,14 +34,14 @@ export class UsersService {
 
   async create(data: CreateUserDto){
 
-    const newUser = new this.userService(data);
+    const newUser = new this.userModel(data);
 
     return await newUser.save();
   }
 
   async update(id: string, changes: UpdateUserDto){
 
-    const updateUser = await this.userService.findByIdAndUpdate(id,
+    const updateUser = await this.userModel.findByIdAndUpdate(id,
       {
         $set: changes
       },
@@ -61,7 +59,7 @@ export class UsersService {
 
   async delete(id: string){
 
-    const deleteUser = await this.userService.findByIdAndDelete(id).exec();
+    const deleteUser = await this.userModel.findByIdAndDelete(id).exec();
 
     if(!deleteUser){
       throw new NotFoundException('user not found');

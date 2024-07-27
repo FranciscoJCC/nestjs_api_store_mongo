@@ -8,20 +8,20 @@ import { CreateBrandDto, FilterBrandsDto, UpdateBrandDto } from '../dtos/brands.
 @Injectable()
 export class BrandsService {
 
-  constructor(@InjectModel(Brand.name) private brandService: Model<Brand>){}
+  constructor(@InjectModel(Brand.name) private brandModel: Model<Brand>){}
 
   async findAll(params?: FilterBrandsDto){
 
     if(params){
       const { limit, offset } = params;
 
-      return await this.brandService.find().skip(offset).limit(limit).exec();
+      return await this.brandModel.find().skip(offset).limit(limit).exec();
     }
-    return await this.brandService.find().exec();
+    return await this.brandModel.find().exec();
   }
 
   async findOne(id: string){
-    const brand = await this.brandService.findById(id).exec();
+    const brand = await this.brandModel.findById(id).exec();
 
     if(!brand){
       throw new NotFoundException('brand not found');
@@ -32,14 +32,14 @@ export class BrandsService {
 
   async create(data: CreateBrandDto){
 
-    const newBrand = new this.brandService(data);
+    const newBrand = new this.brandModel(data);
 
     return await newBrand.save();
   }
 
   async update(id: string, changes: UpdateBrandDto){
 
-    const updateBrand = await this.brandService.findByIdAndUpdate(id,
+    const updateBrand = await this.brandModel.findByIdAndUpdate(id,
       {
         $set: changes
       },
@@ -56,7 +56,7 @@ export class BrandsService {
   }
 
   async delete(id: string){
-    const brand = await this.brandService.findByIdAndDelete(id).exec();
+    const brand = await this.brandModel.findByIdAndDelete(id).exec();
 
     if(!brand){
       throw new NotFoundException('brand not found');

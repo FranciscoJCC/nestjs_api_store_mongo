@@ -7,7 +7,7 @@ import { CreateProductDto, UpdateProductDto, FilterProductsDto } from "../dtos/p
 @Injectable()
 export class ProductsService {
 
-  constructor(@InjectModel(Product.name) private productService: Model<Product>){}
+  constructor(@InjectModel(Product.name) private productModel: Model<Product>){}
 
   async findAll(params?: FilterProductsDto) {
 
@@ -20,14 +20,14 @@ export class ProductsService {
         filters.price = { $gte: minPrice, $lte: maxPrice }
       }
 
-      return await this.productService.find(filters).populate('brand').skip(offset).limit(limit).exec();
+      return await this.productModel.find(filters).populate('brand').skip(offset).limit(limit).exec();
     }
 
-    return await this.productService.find().populate('brand').exec();
+    return await this.productModel.find().populate('brand').exec();
   }
 
   async findOne(id: string){
-    const product = await this.productService.findById(id).exec();
+    const product = await this.productModel.findById(id).exec();
 
     if(!product){
       throw new NotFoundException('product not found');
@@ -39,14 +39,14 @@ export class ProductsService {
 
   async create(payload: CreateProductDto){
 
-    const newProduct = new this.productService(payload);
+    const newProduct = new this.productModel(payload);
 
     return await newProduct.save();
   }
 
   async update(id: string, changes: UpdateProductDto){
 
-    const updateProduct = await this.productService.findByIdAndUpdate(id,
+    const updateProduct = await this.productModel.findByIdAndUpdate(id,
       {
         $set: changes,//Solo los cambios que se envien
       },
@@ -65,7 +65,7 @@ export class ProductsService {
 
   async delete(id: string){
 
-    const deleteProduct = await this.productService.findByIdAndDelete(id).exec();
+    const deleteProduct = await this.productModel.findByIdAndDelete(id).exec();
 
     if(!deleteProduct){
       throw new NotFoundException('product not found');
