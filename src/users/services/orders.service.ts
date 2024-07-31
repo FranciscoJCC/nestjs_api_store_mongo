@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Order } from '../entities/order.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -33,8 +33,31 @@ export class OrdersService {
       .exec();
   }
 
+  async removeProduct(id: String, productId: string){
+    const order = await this.orderModel.findById(id);
+
+    order.products.pull(productId);
+
+    return order.save();
+  }
+
+  async addProducts(id: string, productsIds: string[]){
+    const order = await this.orderModel.findById(id);
+
+    productsIds.forEach((product) => order.products.push(product));
+
+    return order.save();
+  }
+
   async delete(id: string){
-    return this.orderModel.findByIdAndDelete(id);
+    const deleteOrder = await this.orderModel.findByIdAndDelete(id).exec();
+
+    if(!deleteOrder){
+      throw new NotFoundException('order not found');
+    }
+
+    return { status: true, message: "order deleted"};
+
   }
 
 
